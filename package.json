@@ -1,7 +1,10 @@
 {
   "name": "koar",
   "description": "Koa route middleware",
-  "repository":"1.0.1",
+  "repository": {
+    "type": "git",
+    "url": "1.0.1"
+  },
   "keywords": [
     "koa",
     "middleware",
@@ -22,7 +25,16 @@
   "license": "MIT",
   "dependencies": {
     "debug": "*",
-    "co":"*",
+    "co": "*",
     "path-to-regexp": "~1.0.0"
-  }
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "zhangking"
 }

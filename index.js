@@ -54,8 +54,9 @@ function create(options) {
             }
           }
 
-          co(iter).catch(function(e){console.log(e)});
+          yield co(iter).catch(function(e){console.log(e)});
 
+          return yield* next;
         }else{
           console.log('no match method');
           var errorhandle = options.error || noop;
@@ -66,8 +67,6 @@ function create(options) {
         var errorhandle = options.error || noop;
         return yield * errorhandle.apply(self,args);
       }
-
-      return yield* next;
     }
 }
 
