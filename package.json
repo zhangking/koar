@@ -1,0 +1,28 @@
+{
+  "name": "koar",
+  "description": "Koa route middleware",
+  "repository":"1.0.1",
+  "keywords": [
+    "koa",
+    "middleware",
+    "routes",
+    "router",
+    "route"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "devDependencies": {
+    "istanbul-harmony": "0",
+    "mocha": "1",
+    "supertest": "0",
+    "should": "*",
+    "koa": "0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "debug": "*",
+    "co":"*",
+    "path-to-regexp": "~1.0.0"
+  }
+}
