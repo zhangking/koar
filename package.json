@@ -1,7 +1,9 @@
 {
   "name": "koar",
   "description": "Koa route middleware",
-  "repository": "zhangking/koar",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhangking/koar",
   "keywords": [
     "koa",
     "middleware",
