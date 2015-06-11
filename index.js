@@ -1,12 +1,31 @@
 var debug = require('debug')('koar');
 var pathToRegexp = require('path-to-regexp');
 var co = require('co');
+var fs = require('fs');
 var noop = function*(){};
 
 exports.create = create;
 
 function create(options) {
     var folder = options.folder || './Controllers/';
+    var router_map = {};
+
+    fs.readdirSync(folder).forEach(function(filename){
+      if(filename.indexOf('.js') > -1){
+          var ctrl = require(folder + filename);
+          filename = filename.replace('.js', '').toLowerCase();
+          for(var i in ctrl){
+            if(i!='before' && i!='after'){
+              var list = router_map['/'+filename+'/'+i] = [];
+              if(options.after)list.push(options.after);
+              if(ctrl['after']){list.push(ctrl['after'])};
+              list.push(ctrl[i]);
+              if(ctrl['before'])list.push(ctrl['before']);
+              if(options.before)list.push(options.before);
+            }
+          }
+      }
+    });
 
     return function *(next){
       var map = options.map || '',match,args = [],path = this.path;
@@ -23,30 +42,18 @@ function create(options) {
 
       args.push(next);
 
-      path = path.split('/');
-
-      var action = (path[1] || '').toLowerCase(),
-          method = (path[2] || '').toLowerCase(),
-          filepath = folder+action,
-          self = this;
+      var self = this;
       // path
-      try{
-        var file = require(filepath);
-        if(file[method]){
+      var handle = router_map[path];
 
-          var list = [];
-          if(options.after)list.push(options.after);
-          if(file['after']){list.push(file['after'])};
-          list.push(file[method]);
-          if(file['before'])list.push(file['before']);
-          if(options.before)list.push(options.before);
+      if(handle){
 
           var iter = function*(){
-            var i = list.length;
+            var i = handle.length;
             var curr;
 
             while(i--){
-                curr = list[i];
+                curr = handle[i];
                 var ret = yield* curr.apply(self,args);
                 if(ret === false){
                   return ;
@@ -57,17 +64,12 @@ function create(options) {
           yield co(iter).catch(function(e){console.log(e)});
 
           return yield* next;
-        }else{
-          console.log('no match method');
-          var errorhandle = options.error || noop;
-          return yield * errorhandle.apply(self,args);  
-        }
-      }catch(e){
-        console.log(e);
+
+      }else{
         var errorhandle = options.error || noop;
         return yield * errorhandle.apply(self,args);
       }
-    }
+  }
 }
 
 function decode(val) {
