@@ -1,11 +1,11 @@
-# koa-route
+# koa_r
 
  a simple route middleware for koa.
 
 
 ## Installation
 
-
+npm install koa_r
 
 ## Example
 
